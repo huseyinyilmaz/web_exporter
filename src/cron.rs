@@ -1,11 +1,17 @@
 use crate::settings;
 use crate::results;
+use crate::errors;
 use std::error;
 use reqwest;
 use scraper::Html;
 use scraper::Selector;
 use futures::future::{join_all};
 use tokio::time::{delay_for, Duration};
+// impl Error for MyError {
+//     fn description(&self) -> &str {
+//         &self.details
+//     }
+// }
 
 async fn run_count_query(q: &settings::CountQuery) -> Result<u32, Box<dyn error::Error>> {
     let body = reqwest::get(&q.url)
@@ -14,10 +20,18 @@ async fn run_count_query(q: &settings::CountQuery) -> Result<u32, Box<dyn error:
         .await?;
     let document = Html::parse_document(&body);
     // TODO remove unwrap
-    let selector = Selector::parse(&q.query).unwrap();
-    let results = document.select(&selector);
-    let result_length = results.fold(0, |acc, _| acc + 1);
-    Ok(result_length)
+    match Selector::parse(&q.query) {
+        Ok(selector) => {
+          let results = document.select(&selector);
+          let result_length = results.fold(0, |acc, _| acc + 1);
+          Ok(result_length)
+        },
+        Err(err) => Err(Box::new(errors::QueryError{description: format!("{:?}", err)})),
+    }
+    // let selector = Selector::parse(&q.query)?;
+    // let results = document.select(&selector);
+    // let result_length = results.fold(0, |acc, _| acc + 1);
+    // Ok(result_length)
 }
 
 async fn count_query(q: &settings::CountQuery) -> results::CountResult {

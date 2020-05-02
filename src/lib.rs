@@ -1,6 +1,7 @@
 mod cron;
 mod settings;
 mod results;
+mod errors;
 use warp::Filter;
 extern crate pretty_env_logger;
 
