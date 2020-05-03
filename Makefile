@@ -1,2 +1,2 @@
 run:
-	RUST_LOG=trace cargo run
+	RUST_LOG=info cargo run

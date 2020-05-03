@@ -7,7 +7,7 @@ use config::{
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct CountQuery {
+pub struct Query {
     pub url: String,
     pub query: String,
 }
@@ -20,14 +20,13 @@ pub struct Settings {
     // sparkpost: Sparkpost,
     // twitter: Twitter,
     // braintree: Braintree,
-    pub count_queries: Vec<CountQuery>,
+    pub queries: Vec<Query>,
 }
 
 impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
         debug!("Reading settings.");
         let mut s = Config::new();
-
         // Start off by merging in the "default" configuration file
         s.merge(File::with_name("web_exporter"))?;
         s.merge(Environment::with_prefix("web_exporter"))?;
