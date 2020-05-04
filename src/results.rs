@@ -13,3 +13,23 @@ pub struct QueryResult {
 pub struct Result {
     pub query_results: Vec<QueryResult>
 }
+
+
+impl Result {
+    pub fn to_string(&self) -> String {
+        let mut results = Vec::new();
+        for result in &self.query_results {
+            let str1 = format!(
+                "web_exporter_query{{url=\"{}\", query=\"{}\", status={}, error=\"{}\", completed={}}} {}",
+                result.url,
+                result.query,
+                result.status,
+                result.error,
+                if result.completed { 1 } else { 0 },
+                result.count,
+            );
+            results.push(String::from(str1));
+        }
+        return results.join("\n");
+    }
+}

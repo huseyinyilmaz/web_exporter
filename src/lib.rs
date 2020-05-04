@@ -14,7 +14,7 @@ use pretty_env_logger;
 
 async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
     let result = query::query_targets(&s).await;
-    Ok(format!("{:?}", result))
+    Ok(result.to_string())
 }
 
 // async fn get_metrics() -> Result<impl warp::Reply, Box<dyn error::Error>> {
