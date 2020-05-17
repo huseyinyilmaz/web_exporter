@@ -20,16 +20,16 @@ jobs:
         include:
           - name: linux
             os: ubuntu-latest
-            artifact_name: <name>
-            asset_name: <name>-linux
+            artifact_name: prometheus_web_exporter
+            asset_name: prometheus_web_exporter-linux
           - name: windows
             os: windows-latest
-            artifact_name: <name>.exe
-            asset_name: <name>-windows
+            artifact_name: prometheus_web_exporter.exe
+            asset_name: prometheus_web_exporter-windows
           - name: macos
             os: macos-latest
-            artifact_name: <name>
-            asset_name: <name>-macos
+            artifact_name: prometheus_web_exporter
+            asset_name: prometheus_web_exporter-macos
 
     steps:
     - uses: actions/checkout@v1
