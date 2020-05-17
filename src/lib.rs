@@ -1,4 +1,3 @@
-// mod cron;
 mod settings;
 mod results;
 mod errors;
@@ -8,68 +7,40 @@ use std::convert::Infallible;
 // use std::error;
 use std::sync::Arc;
 use pretty_env_logger;
+use std::time;
 
-#[macro_use] extern crate log;
+#[macro_use]
+extern crate log;
 
 
 async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
-    let result = query::query_targets(&s).await;
-    Ok(result.to_string())
+    let start = time::Instant::now();
+    let result = query::process_targets(&s).await;
+    let duration = start.elapsed();
+    Ok(vec![
+        result.to_string(),
+        format!("web_exporter_scrape_duration_milliseconds {}", duration.as_millis()),
+    ].join("\n"))
 }
-
-// async fn get_metrics() -> Result<impl warp::Reply, Box<dyn error::Error>> {
-// async fn get_metrics() -> Result<impl warp::Reply, warp::Rejection> {
-//     return Ok("metrics");
-// }
 
 pub async fn run() {
     pretty_env_logger::init();
     // GET /hello/warp => 200 OK with body "Hello, warp!"
-    let s = Arc::new(settings::Settings::new().unwrap());
-    info!("settings: {:?}", s.clone());
-    let state = warp::any().map(move || s.clone());
+    // XXX we are unwrapping a result here. handle errors better.
+    match settings::Settings::new() {
+        Ok(setting) => {
+            let s = Arc::new(setting);
+            info!("settings: {:?}", s.clone());
+            let state = warp::any().map(move || s.clone());
 
-    // let hello = warp::path!("hello" / String)
-    //     .map(|name| format!("Hello, {}!", name));
+            let metrics = warp::path("metrics").and(state).and_then(get_metrics);
 
+            let routes = metrics;
+            let server = warp::serve(routes).run(([0, 0, 0, 0], 3030));
 
-    let metrics = warp::path("metrics").and(state).and_then(get_metrics);
-
-    // let routes = hello.or(metrics);
-    let routes = metrics;
-    let server = warp::serve(routes).run(([0, 0, 0, 0], 3030));
-
-    server.await;
-    info!("Initialization Complete!");
+            server.await;
+            info!("Initialization Complete!");
+        },
+        Err(err) => error!("Cannot parse configuration file: {:?}", err),
+    }
 }
-
-
-// pub async fn run() {
-//     pretty_env_logger::init();
-//     // GET /hello/warp => 200 OK with body "Hello, warp!"
-//     let s = settings::Settings::new().unwrap();
-//     info!("settings: {:?}", s);
-//     let hello = warp::path!("hello" / String)
-//         .map(|name| format!("Hello, {}!", name));
-
-//     let metrics = warp::path!("metrics")
-//         .map(|| format!("metrics"));
-
-//     let routes = hello.or(metrics);
-
-//     let server = warp::serve(routes).run(([0, 0, 0, 0], 3030));
-
-//     let res = tokio::join!(
-//         server,
-//         cron::run_crons(&s),
-//     );
-
-//     match res {
-//         ((), Ok(_)) => println!("Complete"),
-//         ((), Err(err)) => panic!("Error {:?}", err),
-//     }
-//     info!("Initialization Complete!");
-//     return ();
-
-//     // return Ok(());
-// }

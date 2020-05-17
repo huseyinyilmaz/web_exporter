@@ -4,8 +4,7 @@ pub struct QueryResult {
     pub query: String,
     pub count: u32,
     pub status: u16,
-    pub error: String,
-    pub completed: bool,
+    pub error: bool,
 }
 
 
@@ -20,12 +19,11 @@ impl Result {
         let mut results = Vec::new();
         for result in &self.query_results {
             let str1 = format!(
-                "web_exporter_query{{url=\"{}\", query=\"{}\", status={}, error=\"{}\", completed={}}} {}",
+                "web_exporter_query{{url=\"{}\", query=\"{}\", status={}, error={}}} {}",
                 result.url,
                 result.query,
                 result.status,
-                result.error,
-                if result.completed { 1 } else { 0 },
+                if result.error { 1 } else { 0 },
                 result.count,
             );
             results.push(String::from(str1));

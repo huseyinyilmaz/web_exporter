@@ -7,20 +7,20 @@ use config::{
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct Query {
+pub struct Target {
     pub url: String,
-    pub query: String,
+    pub queries: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
     pub debug: bool,
-    pub interval_seconds: u64,
+    // pub interval_seconds: u64,
     // database: Database,
     // sparkpost: Sparkpost,
     // twitter: Twitter,
     // braintree: Braintree,
-    pub queries: Vec<Query>,
+    pub targets: Vec<Target>,
 }
 
 impl Settings {
