@@ -1,4 +1,4 @@
-use web_exporter::run;
+use prometheus_web_exporter::run;
 // se std::error;
 // use std::result::Result;
 
