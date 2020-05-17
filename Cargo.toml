@@ -1,6 +1,6 @@
 [package]
 name = "prometheus_web_exporter"
-version = "0.1.1"
+version = "0.1.3"
 authors = ["Huseyin Yilmaz <yilmazhuseyin@gmail.com>"]
 edition = "2018"
 description = "Web exporter for prometheus"
