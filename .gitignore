@@ -10,3 +10,4 @@ Cargo.lock
 
 # emacs ignores.
 *~
+web_exporter.yaml
