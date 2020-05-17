@@ -6,6 +6,7 @@ edition = "2018"
 description = "Web exporter for prometheus"
 repository = "https://github.com/huseyinyilmaz/web_exporter"
 readme = "README.md"
+license-file = "LICENSE"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
