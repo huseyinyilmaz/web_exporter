@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug)]
 pub struct QueryResult {
     pub url: String,
@@ -7,15 +9,13 @@ pub struct QueryResult {
     pub error: bool,
 }
 
-
 #[derive(Debug)]
 pub struct Result {
-    pub query_results: Vec<QueryResult>
+    pub query_results: Vec<QueryResult>,
 }
 
-
-impl Result {
-    pub fn to_string(&self) -> String {
+impl fmt::Display for Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut results = Vec::new();
         for result in &self.query_results {
             let str1 = format!(
@@ -26,8 +26,8 @@ impl Result {
                 if result.error { 1 } else { 0 },
                 result.count,
             );
-            results.push(String::from(str1));
+            results.push(str1);
         }
-        return results.join("\n");
+        write!(f, "{}", results.join("\n"))
     }
 }

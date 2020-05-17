@@ -1,17 +1,16 @@
-mod settings;
-mod results;
 mod errors;
 mod query;
-use warp::Filter;
+mod results;
+mod settings;
 use std::convert::Infallible;
+use warp::Filter;
 // use std::error;
+// use pretty_env_logger;
 use std::sync::Arc;
-use pretty_env_logger;
 use std::time;
 
 #[macro_use]
 extern crate log;
-
 
 async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
     let start = time::Instant::now();
@@ -19,8 +18,12 @@ async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Inf
     let duration = start.elapsed();
     Ok(vec![
         result.to_string(),
-        format!("web_exporter_scrape_duration_milliseconds {}", duration.as_millis()),
-    ].join("\n"))
+        format!(
+            "web_exporter_scrape_duration_milliseconds {}",
+            duration.as_millis()
+        ),
+    ]
+    .join("\n"))
 }
 
 pub async fn run() {
@@ -40,7 +43,7 @@ pub async fn run() {
 
             server.await;
             info!("Initialization Complete!");
-        },
+        }
         Err(err) => error!("Cannot parse configuration file: {:?}", err),
     }
 }
