@@ -12,6 +12,6 @@ prerelease:
 	cargo fmt
 	cargo clippy -- -D warnings
 release: prerelease
-	cargo release
+	cargo publish
 	git tag v$(VERSION);
 	git push origin --tags
