@@ -1,11 +1,8 @@
-mod errors;
 mod query;
 mod results;
 mod settings;
 use std::convert::Infallible;
 use warp::Filter;
-// use std::error;
-// use pretty_env_logger;
 use std::sync::Arc;
 use std::time;
 
@@ -27,20 +24,19 @@ async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Inf
 }
 
 pub async fn run() {
-    pretty_env_logger::init();
-    // GET /hello/warp => 200 OK with body "Hello, warp!"
-    // XXX we are unwrapping a result here. handle errors better.
+    pretty_env_logger::init_custom_env("WEB_EXPORTER_LOG_LEVEL");
     match settings::Settings::new() {
         Ok(setting) => {
+            let addr = setting.ip_address.clone();
+            let port = setting.port.clone();
+            let path = setting.metrics_path.clone();
             let s = Arc::new(setting);
+
             info!("settings: {:?}", s.clone());
             let state = warp::any().map(move || s.clone());
-
-            let metrics = warp::path("metrics").and(state).and_then(get_metrics);
-
+            let metrics = warp::path(path).and(state).and_then(get_metrics);
             let routes = metrics;
-            let server = warp::serve(routes).run(([0, 0, 0, 0], 3030));
-
+            let server = warp::serve(routes).run((addr, port));
             server.await;
             info!("Initialization Complete!");
         }

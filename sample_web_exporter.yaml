@@ -1,0 +1,22 @@
+ip_address: "0.0.0.0"
+port: 3030
+metrics_path: "metrics"
+targets:
+  - url: "https://www.rust-lang.org/"
+    queries:
+      - "#language-values div.flex-none section"
+      - "header h1"
+      - "footer div.attribution"
+
+  - url: "https://www.rust-lang.org/invalid-page-with-404-response"
+    queries:
+      - "div.flex"
+      - "div"
+
+  - url: "https://www.page-does-not-exist.io/"
+    queries:
+      - "div"
+
+  - url: "https://www.rust-lang.org/invalid-css-query"
+    queries:
+      - "**XX**"

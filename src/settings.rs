@@ -1,5 +1,6 @@
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
+use std::net::{Ipv4Addr};
 
 #[derive(Debug, Deserialize)]
 pub struct Target {
@@ -9,12 +10,9 @@ pub struct Target {
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
-    pub debug: bool,
-    // pub interval_seconds: u64,
-    // database: Database,
-    // sparkpost: Sparkpost,
-    // twitter: Twitter,
-    // braintree: Braintree,
+    pub ip_address: Ipv4Addr,
+    pub port: u16,
+    pub metrics_path: String,
     pub targets: Vec<Target>,
 }
 
