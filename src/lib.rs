@@ -2,9 +2,9 @@ mod query;
 mod results;
 mod settings;
 use std::convert::Infallible;
-use warp::Filter;
 use std::sync::Arc;
 use std::time;
+use warp::Filter;
 
 #[macro_use]
 extern crate log;
@@ -27,8 +27,8 @@ pub async fn run() {
     pretty_env_logger::init_custom_env("WEB_EXPORTER_LOG_LEVEL");
     match settings::Settings::new() {
         Ok(setting) => {
-            let addr = setting.ip_address.clone();
-            let port = setting.port.clone();
+            let addr = setting.ip_address;
+            let port = setting.port;
             let path = setting.metrics_path.clone();
             let s = Arc::new(setting);
 

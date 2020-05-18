@@ -1,6 +1,6 @@
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
-use std::net::{Ipv4Addr};
+use std::net::Ipv4Addr;
 
 #[derive(Debug, Deserialize)]
 pub struct Target {
