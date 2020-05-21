@@ -17,7 +17,7 @@ FROM rust:latest as cargo-build
 
 RUN apt-get update
 
-RUN apt-get install musl-tools build-essential libssl-dev openssl pkg-config -y
+RUN apt-get install musl-tools build-essential libssl-dev pkg-config -y
 
 RUN rustup target add x86_64-unknown-linux-musl
 
