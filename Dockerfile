@@ -19,6 +19,8 @@ RUN apt-get update
 
 RUN apt-get install musl-tools build-essential libssl-dev pkg-config -y
 
+ENV OPENSSL_DIR=/usr/lib/x86_64-linux-gnu
+
 RUN rustup target add x86_64-unknown-linux-musl
 
 WORKDIR /usr/src/prometheus_web_exporter
