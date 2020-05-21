@@ -54,5 +54,5 @@ $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
 ## RUN WITH DOCKER
 
 ```
-docker run -p 3030:3030 -v /Users/huseyin/projects/web_exporter/web_exporter.yaml:/web_exporter.yaml -e WEB_EXPORTER_LOG_LEVEL=info huseyinyilmaz/web_exporter
+docker run -p 3030:3030 --name web_exporter -v /Users/huseyin/projects/web_exporter/web_exporter.yaml:/home/prometheus_web_exporter/bin/web_exporter.yaml -e WEB_EXPORTER_LOG_LEVEL=info huseyinyilmaz/web_exporter:v0.1.6
 ```
