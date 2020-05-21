@@ -1,13 +1,31 @@
-name: Publish Docker
-on: [push]
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - master
+
 jobs:
+
   build:
+
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@master
-    - name: Publish to Registry
-      uses: HurricanKai/Publish-Docker-Github-Action@master
+    - uses: actions/checkout@v1
+    - name: docker login
+      uses: actions/docker/login@master
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_HUB_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_HUB_PASSWORD}}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD huseyinyilmaz/web_exporter:latest
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag huseyinyilmaz/web_exporter:latest
+    - name: docker build
+      uses: actions/docker/cli@master
       with:
-        name: huseyinyilmaz/prometheus_web_exporter
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        args: build -t huseyinyilmaz/web_exporter:latest -f Dockerfile .
+    - name: docker push
+      uses: actions/docker/cli@master
+      with:
+        args: push huseyinyilmaz/web_exporter:latest
