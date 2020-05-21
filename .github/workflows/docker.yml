@@ -29,8 +29,11 @@
 #       uses: actions/docker/cli@master
 #       with:
 #         args: push huseyinyilmaz/actixtest:latest
-name: Publish Docker
-on: [push]
+name: Publish to Dockerhub
+on:
+  push:
+    tags:
+      - 'v*'
 jobs:
   build:
     runs-on: ubuntu-latest
