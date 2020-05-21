@@ -86,6 +86,8 @@ RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-li
 
 FROM alpine:latest
 
+ENV WEB_EXPORTER_LOG_LEVEL=info
+
 RUN addgroup -g 1000 prometheus_web_exporter
 
 RUN adduser -D -s /bin/sh -u 1000 -G prometheus_web_exporter prometheus_web_exporter
