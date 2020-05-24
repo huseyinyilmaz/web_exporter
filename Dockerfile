@@ -47,7 +47,7 @@ FROM rust:latest as cargo-build
 
 # ARG OPENSSL_VERSION=1.0.2s
 
-# RUN apt-get update
+RUN apt-get update
 
 # RUN apt-get install sudo musl-dev musl-tools libssl-dev openssl ca-certificates git libc6-dev gcc -y
 RUN apt-get install sudo musl-dev musl-tools
