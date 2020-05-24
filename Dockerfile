@@ -50,7 +50,7 @@ FROM rust:latest as cargo-build
 RUN apt-get update
 
 # RUN apt-get install sudo musl-dev musl-tools libssl-dev openssl ca-certificates git libc6-dev gcc -y
-RUN apt-get install sudo musl-dev musl-tools
+RUN apt-get install musl-dev musl-tools -y
 
 # RUN rustup target add x86_64-unknown-linux-musl
 
