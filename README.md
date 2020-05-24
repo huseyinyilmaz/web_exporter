@@ -10,6 +10,7 @@ It send a request to a webpage and runs one or more css queries on the result. N
 ``` yaml
 ip_address: "0.0.0.0"
 port: 3030
+metrics_path: "metrics"
 targets:
   - url: "https://www.rust-lang.org/"
     queries:
@@ -34,14 +35,21 @@ targets:
 Configuration above will generate metrics like following:
 
 ``` txt
-web_exporter_query{url="https://www.rust-lang.org/", query="#language-values div.flex-none section", status=200, error=0} 3
-web_exporter_query{url="https://www.rust-lang.org/", query="header h1", status=200, error=0} 1
-web_exporter_query{url="https://www.rust-lang.org/", query="footer div.attribution", status=200, error=0} 1
-web_exporter_query{url="https://www.rust-lang.org/invalid-page-with-404-response", query="div.flex", status=404, error=0} 6
-web_exporter_query{url="https://www.rust-lang.org/invalid-page-with-404-response", query="div", status=404, error=0} 14
-web_exporter_query{url="https://www.page-does-not-exist.io/", query="div", status=0, error=1} 0
-web_exporter_query{url="https://www.rust-lang.org/invalid-css-query", query="**XX**", status=0, error=1} 0
-web_exporter_scrape_duration_milliseconds 386
+web_exporter_response_duration_milliseconds{url="https://www.rust-lang.org/", status=200, error=0} 640
+web_exporter_response_response_size_bytes{url="https://www.rust-lang.org/", status=200, error=0} 19220
+web_exporter_query_count{url="https://www.rust-lang.org/", query="#language-values div.flex-none section", status=200, error=0} 3
+web_exporter_query_count{url="https://www.rust-lang.org/", query="header h1", status=200, error=0} 1
+web_exporter_query_count{url="https://www.rust-lang.org/", query="footer div.attribution", status=200, error=0} 1
+web_exporter_response_duration_milliseconds{url="https://www.rust-lang.org/invalid-page-with-404-response", status=404, error=0} 292
+web_exporter_response_response_size_bytes{url="https://www.rust-lang.org/invalid-page-with-404-response", status=404, error=0} 8244
+web_exporter_query_count{url="https://www.rust-lang.org/invalid-page-with-404-response", query="div.flex", status=404, error=0} 6
+web_exporter_query_count{url="https://www.rust-lang.org/invalid-page-with-404-response", query="div", status=404, error=0} 14
+web_exporter_response_duration_milliseconds{url="https://www.page-does-not-exist.io/", status=0, error=1} 270
+web_exporter_response_response_size_bytes{url="https://www.page-does-not-exist.io/", status=0, error=1} 0
+web_exporter_response_duration_milliseconds{url="https://www.rust-lang.org/invalid-css-query", status=404, error=0} 306
+web_exporter_response_response_size_bytes{url="https://www.rust-lang.org/invalid-css-query", status=404, error=0} 8244
+web_exporter_query_count{url="https://www.rust-lang.org/invalid-css-query", query="**XX**", status=404, error=0} 0
+web_exporter_scrape_duration_milliseconds 641
 ```
 
 ## Logging:

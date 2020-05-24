@@ -15,7 +15,7 @@ RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-li
 
 FROM alpine:latest
 
-ENV WEB_EXPORTER_LOG_LEVEL=info
+ENV WEB_EXPORTER_LOG_LEVEL=warn
 
 WORKDIR /usr/local/prometheus_web_exporter
 
