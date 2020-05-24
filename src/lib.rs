@@ -10,7 +10,8 @@ use warp::Filter;
 extern crate log;
 
 async fn get_root(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
-    Ok(warp::reply::html(format!("
+    Ok(warp::reply::html(format!(
+        "
 <!DOCTYPE html>
 <html>
     <body>
@@ -18,7 +19,9 @@ async fn get_root(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infall
         <a href=\"{}\">Metrics</a>
     </body>
 </html>
-", s.metrics_path.clone())))
+",
+        s.metrics_path.clone()
+    )))
 }
 
 async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
@@ -36,7 +39,7 @@ async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Inf
 }
 
 async fn get_settings(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
-    match serde_yaml::to_string(&*s.clone()) {
+    match serde_yaml::to_string(&*s) {
         Ok(settings_str) => Ok(settings_str),
         Err(err) => Ok(format!("Invalid Settings: {}", err)),
     }
@@ -54,9 +57,14 @@ pub async fn run() {
             info!("settings: {:?}", s.clone());
             let state = warp::any().map(move || s.clone());
             let root_route = warp::path::end().and(state.clone()).and_then(get_root);
-            let settings_route = warp::path("config").and(state.clone()).and_then(get_settings);
+            let settings_route = warp::path("config")
+                .and(state.clone())
+                .and_then(get_settings);
             let metrics_route = warp::path(path).and(state).and_then(get_metrics);
-            let routes = metrics_route.or(settings_route).or(root_route).with(warp::compression::gzip());
+            let routes = metrics_route
+                .or(settings_route)
+                .or(root_route)
+                .with(warp::compression::gzip());
             let server = warp::serve(routes).run((addr, port));
             server.await;
             info!("Initialization Complete!");

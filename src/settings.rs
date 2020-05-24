@@ -1,5 +1,5 @@
 use config::{Config, ConfigError, Environment, File};
-use serde::{ Serialize, Deserialize };
+use serde::{Deserialize, Serialize};
 use std::net::Ipv4Addr;
 
 #[derive(Debug, Deserialize, Serialize)]
