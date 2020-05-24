@@ -85,7 +85,8 @@ RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-li
 # Final Stage
 # ------------------------------------------------------------------------------
 
-FROM alpine:latest
+# FROM alpine:latest
+FROM ubuntu
 
 ENV WEB_EXPORTER_LOG_LEVEL=info
 
