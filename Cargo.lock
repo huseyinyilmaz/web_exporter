@@ -1115,7 +1115,7 @@ checksum = "9a1574a51c3fd37b26d2c0032b649d08a7d51d4cca9c41bbc5bf7118fa4509d0"
 
 [[package]]
 name = "prometheus_web_exporter"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
  "config",
  "futures",

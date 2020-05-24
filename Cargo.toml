@@ -1,6 +1,6 @@
 [package]
 name = "prometheus_web_exporter"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Huseyin Yilmaz <yilmazhuseyin@gmail.com>"]
 edition = "2018"
 description = "Web exporter for prometheus"
@@ -13,7 +13,6 @@ license-file = "LICENSE"
 tokio = { version = "0.2", features = ["macros"] }
 warp = {version = "0.2", features = ["compression"]}
 reqwest = {version = "0.10.4", default-features = false, features = ["rustls-tls", "json"]} # remove openssl dependency from reqwest.
-# reqwest = "0.10.4"
 log = "0.4"
 pretty_env_logger = "0.4"
 scraper = "0.11.0"
