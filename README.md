@@ -77,7 +77,7 @@ $ docker run \
 
 ### With Cargo
 
-```
+``` bash
 # First install web_exporter with cargo.
 cargo install prometheus_web_exporter
 # After installation cargo will show where it is installed it is likely on
