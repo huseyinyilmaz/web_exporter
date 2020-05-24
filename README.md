@@ -50,9 +50,14 @@ Logging configuration can be provided through environment variables. To run the 
 ``` bash
 $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
 ```
-
-## RUN WITH DOCKER
+## How to run web_exporter
+### RUN WITH DOCKER
 
 ```
-docker run --rm -ti -p 3030:3030 --name web_exporter -v $(pwd)/web_exporter.yaml:/usr/local/prometheus_web_exporter/web_exporter.yaml huseyinyilmaz/web_exporter:latest
+docker run \
+       --rm -ti -d \
+       -p 3030:3030 \
+       --name web_exporter \
+       -v $(pwd)/web_exporter.yaml:/usr/local/prometheus_web_exporter/web_exporter.yaml \
+       huseyinyilmaz/web_exporter:latest
 ```
