@@ -35,7 +35,7 @@ pub async fn run() {
             info!("settings: {:?}", s.clone());
             let state = warp::any().map(move || s.clone());
             let metrics = warp::path(path).and(state).and_then(get_metrics);
-            let routes = metrics;
+            let routes = metrics.with(warp::compression::gzip());
             let server = warp::serve(routes).run((addr, port));
             server.await;
             info!("Initialization Complete!");
