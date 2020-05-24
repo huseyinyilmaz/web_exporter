@@ -58,14 +58,36 @@ Logging configuration can be provided through environment variables. To run the 
 ``` bash
 $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
 ```
-## How to run web_exporter
-### RUN WITH DOCKER
-
-```
-docker run \
+## How to get it
+### With docker.
+``` bash
+# Download sample configuration from github
+wget https://raw.githubusercontent.com/huseyinyilmaz/web_exporter/master/sample_web_exporter.yaml
+# Rename it to web_exporter.yaml
+mv sample_web_exporter.yaml web_exporter.yaml
+# Run Docker and mount configuration file to container
+$ docker run \
        --rm -ti -d \
        -p 3030:3030 \
        --name web_exporter \
        -v $(pwd)/web_exporter.yaml:/usr/local/prometheus_web_exporter/web_exporter.yaml \
-       huseyinyilmaz/web_exporter:1.0.0
+       huseyinyilmaz/web_exporter:v1.0.0
+# endpoint should be on http://localhost:3030/metrics
+```
+
+### With Cargo
+
+```
+# First install web_exporter with cargo.
+cargo install prometheus_web_exporter
+# After installation cargo will show where it is installed it is likely on
+# ~/.cargo/bin. Go to installation folder and download sample config next to executable.
+cd ~/.cargo/bin
+# Download sample configuration from github
+wget https://raw.githubusercontent.com/huseyinyilmaz/web_exporter/master/sample_web_exporter.yaml
+# Rename it to web_exporter.yaml
+mv sample_web_exporter.yaml web_exporter.yaml
+# run web_exporter
+./prometheus_web_exporter
+# endpoint should be on http://localhost:3030/metrics
 ```
