@@ -89,16 +89,8 @@ FROM alpine:latest
 
 ENV WEB_EXPORTER_LOG_LEVEL=info
 
-RUN addgroup -g 1000 prometheus_web_exporter
-
-RUN adduser -D -s /bin/sh -u 1000 -G prometheus_web_exporter prometheus_web_exporter
-
-WORKDIR /home/prometheus_web_exporter/bin/
+WORKDIR /usr/local/prometheus_web_exporter
 
 COPY --from=cargo-build /usr/src/prometheus_web_exporter/target/x86_64-unknown-linux-musl/release/prometheus_web_exporter .
-
-RUN chown prometheus_web_exporter:prometheus_web_exporter prometheus_web_exporter
-
-USER prometheus_web_exporter
 
 CMD ["./prometheus_web_exporter"]
