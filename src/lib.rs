@@ -9,6 +9,18 @@ use warp::Filter;
 #[macro_use]
 extern crate log;
 
+async fn get_root(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
+    Ok(warp::reply::html(format!("
+<!DOCTYPE html>
+<html>
+    <body>
+        <a href=\"config\">Configuration</a><br>
+        <a href=\"{}\">Metrics</a>
+    </body>
+</html>
+", s.metrics_path.clone())))
+}
+
 async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
     let start = time::Instant::now();
     let result = query::process_targets(&s).await;
@@ -23,6 +35,13 @@ async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Inf
     .join("\n"))
 }
 
+async fn get_settings(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infallible> {
+    match serde_yaml::to_string(&*s.clone()) {
+        Ok(settings_str) => Ok(settings_str),
+        Err(err) => Ok(format!("Invalid Settings: {}", err)),
+    }
+}
+
 pub async fn run() {
     pretty_env_logger::init_custom_env("WEB_EXPORTER_LOG_LEVEL");
     match settings::Settings::new() {
@@ -34,8 +53,10 @@ pub async fn run() {
 
             info!("settings: {:?}", s.clone());
             let state = warp::any().map(move || s.clone());
-            let metrics = warp::path(path).and(state).and_then(get_metrics);
-            let routes = metrics.with(warp::compression::gzip());
+            let root_route = warp::path::end().and(state.clone()).and_then(get_root);
+            let settings_route = warp::path("config").and(state.clone()).and_then(get_settings);
+            let metrics_route = warp::path(path).and(state).and_then(get_metrics);
+            let routes = metrics_route.or(settings_route).or(root_route).with(warp::compression::gzip());
             let server = warp::serve(routes).run((addr, port));
             server.await;
             info!("Initialization Complete!");

@@ -1,14 +1,14 @@
 use config::{Config, ConfigError, Environment, File};
-use serde::Deserialize;
+use serde::{ Serialize, Deserialize };
 use std::net::Ipv4Addr;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Target {
     pub url: String,
     pub queries: Vec<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
     pub ip_address: Ipv4Addr,
     pub port: u16,

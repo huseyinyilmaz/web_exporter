@@ -19,4 +19,5 @@ pretty_env_logger = "0.4"
 scraper = "0.11.0"
 config = "0.10.1"
 serde = { version = "1.0.106", features = ["derive"] }
+serde_yaml = "0.8.12"
 futures = "0.3.4"
