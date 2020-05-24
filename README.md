@@ -67,5 +67,5 @@ docker run \
        -p 3030:3030 \
        --name web_exporter \
        -v $(pwd)/web_exporter.yaml:/usr/local/prometheus_web_exporter/web_exporter.yaml \
-       huseyinyilmaz/web_exporter:latest
+       huseyinyilmaz/web_exporter:1.0.0
 ```
