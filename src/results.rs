@@ -56,7 +56,6 @@ impl fmt::Display for TargetResult {
     }
 }
 
-
 impl fmt::Display for Result {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut results = Vec::new();

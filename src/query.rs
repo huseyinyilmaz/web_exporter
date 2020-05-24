@@ -45,36 +45,39 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
                 url: target.url.clone(),
                 status: 0,
                 error: true,
-                duration: duration,
                 size: 0,
+                duration,
                 // No need to go through queries response
-
                 query_results,
             }
         }
         Ok(response) => {
             for q in &target.queries {
-                query_results.push (
-                    match &Selector::parse(&q) {
-                        Err(err) => {
-                            warn!("Query Parse Error: url: {:?}, error: {:?}", target.url, err);
-                            // None means we could not parse that query.
-                            results::QueryResult { query: q.clone(), count: None }
-                        },
-                        Ok(selector) => {
-                            let results = response.document.select(&selector);
-                            let count = results.fold(0, |acc, _| acc + 1);
-                            results::QueryResult { query: q.clone(), count: Some(count) }
+                query_results.push(match &Selector::parse(&q) {
+                    Err(err) => {
+                        warn!("Query Parse Error: url: {:?}, error: {:?}", target.url, err);
+                        // None means we could not parse that query.
+                        results::QueryResult {
+                            query: q.clone(),
+                            count: None,
                         }
                     }
-                );
+                    Ok(selector) => {
+                        let results = response.document.select(&selector);
+                        let count = results.fold(0, |acc, _| acc + 1);
+                        results::QueryResult {
+                            query: q.clone(),
+                            count: Some(count),
+                        }
+                    }
+                });
             }
             results::TargetResult {
                 url: target.url.clone(),
                 status: response.status,
                 error: false,
-                duration: duration,
                 size: response.size,
+                duration,
                 // No need to go through queries response
                 query_results,
             }
@@ -84,10 +87,11 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
 
 pub async fn process_targets(s: &settings::Settings) -> results::Result {
     info!("Starting crawling targets.");
-    let target_results: Vec<results::TargetResult> = join_all(s.targets.iter().map(process_target)).await;
-        // .into_iter()
-        // .flatten()
-        // .collect();
+    let target_results: Vec<results::TargetResult> =
+        join_all(s.targets.iter().map(process_target)).await;
+    // .into_iter()
+    // .flatten()
+    // .collect();
     info!("crawling target is complete.");
     let result = results::Result { target_results };
     debug!("{:?}", result);
