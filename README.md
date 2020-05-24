@@ -68,6 +68,21 @@ $ docker run \
        huseyinyilmaz/web_exporter:v1.0.0
 # endpoint should be on http://localhost:3030/metrics
 ```
+### With docker-compose
+
+First download sample configuration from repository and put it in the same directory as docker-compose.yaml file. Then you can add following config to your docker-compose file.
+```
+  webexporter:
+    image: huseyinyilmaz/web_exporter:v1.0.1
+    volumes:
+      - ./web_exporter.yaml:/usr/local/prometheus_web_exporter/web_exporter.yaml
+    environment:
+      WEB_EXPORTER_LOG_LEVEL: warn
+    ports:
+      - 3030:3030
+    expose:
+      - 3030
+```
 
 ### With Cargo
 
