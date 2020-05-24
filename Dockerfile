@@ -77,7 +77,7 @@ RUN rustup target add x86_64-unknown-linux-musl
 #     OPENSSL_LIB_DIR=/usr/local/musl/lib \
 #     OPENSSL_INCLUDE_DIR=/usr/local/musl/include
 
-# WORKDIR /usr/src/prometheus_web_exporter
+WORKDIR /usr/src/prometheus_web_exporter
 COPY . .
 RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-linux-musl
 
