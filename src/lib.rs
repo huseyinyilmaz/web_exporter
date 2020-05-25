@@ -20,7 +20,7 @@ async fn get_root(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Infall
     </body>
 </html>
 ",
-        s.metrics_path.clone()
+        s.metrics_path.clone().unwrap()
     )))
 }
 
@@ -49,9 +49,9 @@ pub async fn run() {
     pretty_env_logger::init_custom_env("WEB_EXPORTER_LOG_LEVEL");
     match settings::Settings::new() {
         Ok(setting) => {
-            let addr = setting.ip_address;
-            let port = setting.port;
-            let path = setting.metrics_path.clone();
+            let addr = setting.ip_address.unwrap();
+            let port = setting.port.unwrap();
+            let path = setting.metrics_path.clone().unwrap();
             let s = Arc::new(setting);
 
             info!("settings: {:?}", s.clone());

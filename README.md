@@ -8,28 +8,38 @@ Web exporter uses same technology with firefox browser engine (servo) to parse a
    Web configuration is done with a file named web_exporter.yaml that is located in the same directory with the executable. Here is an example for web_exporterl.yaml file:
 
 ``` yaml
-ip_address: "0.0.0.0"
-port: 3030
-metrics_path: "metrics"
+# ip address server will listen. default: 0.0.0.0
+# ip_address: "0.0.0.0"
+#
+# port that servier will listen. default: 3030
+# port: 3030
+#
+# metrics path. default: /metrics
+# metrics_path: "metrics"
+#
+# targets to crawl for each request.
 targets:
+  # 200 response with queries
   - url: "https://www.rust-lang.org/"
     queries:
       - "#language-values div.flex-none section"
       - "header h1"
       - "footer div.attribution"
-
+  # 404 response with queries
   - url: "https://www.rust-lang.org/invalid-page-with-404-response"
     queries:
       - "div.flex"
       - "div"
-
+  # Network error. (Queries will not return any value since they will not be running.)
   - url: "https://www.page-does-not-exist.io/"
     queries:
       - "div"
-
+  # Invalid query (return value will be 0 and css query parse error will be logged.)
   - url: "https://www.rust-lang.org/invalid-css-query"
     queries:
       - "**XX**"
+  # 200 page without any query (only response time and size will be returned.)
+  - url: "https://www.rust-lang.org/no-css-query"
 ```
 
 Configuration above will generate metrics like following:

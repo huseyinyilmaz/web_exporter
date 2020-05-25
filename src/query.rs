@@ -37,6 +37,7 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
     let raw_response = &query_url(&target.url).await;
     let duration = start.elapsed().as_millis();
     let mut query_results = Vec::new();
+    let default_queries = &Vec::new();
     match &raw_response {
         // There was an error with the request.
         Err(err) => {
@@ -52,7 +53,7 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
             }
         }
         Ok(response) => {
-            for q in &target.queries {
+            for q in target.queries.as_ref().unwrap_or(default_queries) {
                 query_results.push(match &Selector::parse(&q) {
                     Err(err) => {
                         warn!("Query Parse Error: url: {:?}, error: {:?}", target.url, err);
@@ -87,8 +88,10 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
 
 pub async fn process_targets(s: &settings::Settings) -> results::Result {
     info!("Starting crawling targets.");
+    let default_vec = &Vec::new();
+    let targets = s.targets.as_ref().unwrap_or(default_vec);
     let target_results: Vec<results::TargetResult> =
-        join_all(s.targets.iter().map(process_target)).await;
+        join_all(targets.iter().map(process_target)).await;
     // .into_iter()
     // .flatten()
     // .collect();
