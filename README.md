@@ -116,3 +116,6 @@ Logging configuration can be provided through environment variables. To run the 
 ``` bash
 $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
 ```
+
+### Download binary
+You can download the binary for your os from releases section in github. After getting the binary, just put the configuration next to binary you are good to go.
