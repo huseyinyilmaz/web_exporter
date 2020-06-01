@@ -18,8 +18,18 @@ struct QueryResponse {
     size: usize,
 }
 // use tokio::time::{delay_for, Duration};
-async fn query_url(url: &str) -> Result<QueryResponse, Box<dyn error::Error>> {
-    let response = reqwest::get(url).await?;
+async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dyn error::Error>> {
+    let client = reqwest::Client::new();
+    let url = &target.url;
+    let mut req = match target.method.as_ref().unwrap_or(&settings::TargetMethod::GET) {
+        settings::TargetMethod::GET => client.get(url),
+        settings::TargetMethod::POST => client.post(url),
+    };
+    if let Some(body_string) = &target.body {
+
+        req = req.body(format!("{}",body_string));
+    }
+    let response = req.send().await?;
     let status = response.status().as_u16();
     let body = response.text().await?;
     let size = body.len();
@@ -32,9 +42,9 @@ async fn query_url(url: &str) -> Result<QueryResponse, Box<dyn error::Error>> {
 }
 
 // async fn process_target(target: &settings::Target) -> Vec<results::QueryResult> {
-async fn process_target(target: &settings::Target) -> results::TargetResult {
+async fn process_target(target: &settings::Target) -> results::TargetResult<'_> {
     let start = time::Instant::now();
-    let raw_response = &query_url(&target.url).await;
+    let raw_response = &query_target(&target).await;
     let duration = start.elapsed().as_millis();
     let mut query_results = Vec::new();
     let default_queries = &Vec::new();
@@ -45,6 +55,7 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
             results::TargetResult {
                 url: target.url.clone(),
                 status: 0,
+                method: &target.method.as_ref().unwrap_or(&settings::TargetMethod::GET), // TODO do not repeat default value.
                 error: true,
                 size: 0,
                 duration,
@@ -61,6 +72,7 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
                         results::QueryResult {
                             query: q.clone(),
                             count: None,
+
                         }
                     }
                     Ok(selector) => {
@@ -76,6 +88,7 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
             results::TargetResult {
                 url: target.url.clone(),
                 status: response.status,
+                method: target.method.as_ref().unwrap_or(&settings::TargetMethod::GET),
                 error: false,
                 size: response.size,
                 duration,
@@ -86,10 +99,11 @@ async fn process_target(target: &settings::Target) -> results::TargetResult {
     }
 }
 
-pub async fn process_targets(s: &settings::Settings) -> results::Result {
+
+pub async fn process_targets<'result, 'settings: 'result>(s: &'settings settings::Settings) -> results::Result<'result> {
     info!("Starting crawling targets.");
-    let default_vec = &Vec::new();
-    let targets = s.targets.as_ref().unwrap_or(default_vec);
+    // empty vector will be assigned from default value.
+    let targets = s.targets.as_ref().unwrap();
     let target_results: Vec<results::TargetResult> =
         join_all(targets.iter().map(process_target)).await;
     // .into_iter()

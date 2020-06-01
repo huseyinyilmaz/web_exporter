@@ -1,10 +1,30 @@
+use std::fmt;
 use config::{Config, ConfigError, Environment, File};
 use serde::{Deserialize, Serialize};
 use std::net::Ipv4Addr;
 
 #[derive(Debug, Deserialize, Serialize)]
+pub enum TargetMethod {
+    GET,
+    POST,
+}
+
+impl fmt::Display for TargetMethod {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match &self {
+            &TargetMethod::GET => write!(f, "GET"),
+            &TargetMethod::POST => write!(f, "POST"),
+        }
+    }
+}
+
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Target {
     pub url: String,
+    pub method: Option<TargetMethod>,
+    pub body: Option<String>,
+    pub formdata: Option<Vec<(String, String)>>,
     pub queries: Option<Vec<String>>,
 }
 
