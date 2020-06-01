@@ -1,6 +1,6 @@
-use std::fmt;
 use config::{Config, ConfigError, Environment, File};
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use std::net::Ipv4Addr;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -11,13 +11,12 @@ pub enum TargetMethod {
 
 impl fmt::Display for TargetMethod {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match &self {
-            &TargetMethod::GET => write!(f, "GET"),
-            &TargetMethod::POST => write!(f, "POST"),
+        match self {
+            TargetMethod::GET => write!(f, "GET"),
+            TargetMethod::POST => write!(f, "POST"),
         }
     }
 }
-
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Target {
