@@ -2,6 +2,7 @@ use config::{Config, ConfigError, Environment, File};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::net::Ipv4Addr;
+use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub enum TargetMethod {
@@ -24,6 +25,8 @@ pub struct Target {
     pub method: Option<TargetMethod>,
     pub body: Option<String>,
     pub formdata: Option<Vec<(String, String)>>,
+    pub queryparameters: Option<HashMap<String, String>>,
+    pub headers: Option<HashMap<String, String>>,
     pub queries: Option<Vec<String>>,
 }
 

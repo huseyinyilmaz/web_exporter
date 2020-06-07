@@ -23,6 +23,7 @@ async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dy
     let url = &target.url;
     let mut req = match target
         .method
+
         .as_ref()
         .unwrap_or(&settings::TargetMethod::GET)
     {
@@ -31,7 +32,35 @@ async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dy
     };
     if let Some(body_string) = &target.body {
         req = req.body(body_string.to_string());
+    } else if let Some(formdata) = &target.formdata {
+        let mut form = reqwest::multipart::Form::new();
+        for (key, value) in formdata {
+            form = form.text(key.clone(), value.clone());
+        }
+        req = req.multipart(form);
     }
+    if let Some(queryparameters) = &target.queryparameters {
+        // let multipart_form = reqwest::multipart::Form::new();
+        // for (key, value) in queryparameters {
+        //     form = form.text(key, value);
+        // }
+        req = req.query(queryparameters);
+    }
+
+    if let Some(headers) = &target.headers {
+        let mut headers_map = reqwest::header::HeaderMap::new();
+        for (key, value) in headers {
+            headers_map.insert(
+                reqwest::header::HeaderName::from_bytes(key.as_bytes())?,
+                reqwest::header::HeaderValue::from_str(value)?,
+            );
+        //     form = form.text(key, value);
+         }
+        req = req.headers(headers_map);
+    }
+
+
+
     let response = req.send().await?;
     let status = response.status().as_u16();
     let body = response.text().await?;
