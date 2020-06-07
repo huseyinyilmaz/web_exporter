@@ -15,18 +15,26 @@ targets:
       - "#language-values div.flex-none section"
       - "header h1"
       - "footer div.attribution"
+    extra_labels:
+      name: homepage
   # 404 response with queries
   - url: "https://www.rust-lang.org/invalid-page-with-404-response"
     queries:
       - "div.flex"
       - "div"
+    extra_labels:
+      name: 404 page
   # Network error. (Queries will not return any value since they will not be running.)
   - url: "https://www.page-does-not-exist.io/"
     queries:
       - "div"
+    extra_labels:
+      name: nonexistent_page
   # Invalid query (return value will be 0 and css query parse error will be logged.)
   - url: "https://www.rust-lang.org/invalid-css-query"
     queries:
       - "**XX**"
+    extra_labels:
+      name: query_with_invalid_css
   # 200 page without any query (only response time and size will be returned.)
   - url: "https://www.rust-lang.org/no-css-query"

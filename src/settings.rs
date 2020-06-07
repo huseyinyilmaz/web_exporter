@@ -21,6 +21,7 @@ impl fmt::Display for TargetMethod {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Target {
+    pub name: Option<String>,
     pub url: String,
     pub method: Option<TargetMethod>,
     pub body: Option<String>,
@@ -28,6 +29,7 @@ pub struct Target {
     pub queryparameters: Option<HashMap<String, String>>,
     pub headers: Option<HashMap<String, String>>,
     pub queries: Option<Vec<String>>,
+    pub extra_labels: Option<HashMap<String, String>>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

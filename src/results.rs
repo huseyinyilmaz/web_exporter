@@ -1,5 +1,6 @@
 use crate::settings;
 use std::fmt;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct QueryResult {
@@ -16,6 +17,7 @@ pub struct TargetResult<'a> {
     pub size: usize,
     pub duration: u128,
     pub query_results: Vec<QueryResult>,
+    pub extra_labels: HashMap<String, String>,
 }
 
 #[derive(Debug)]
@@ -25,34 +27,30 @@ pub struct Result<'a> {
 
 impl fmt::Display for TargetResult<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut labels = self.extra_labels.clone();
+        labels.insert("url".to_string(), self.url.to_string());
+        labels.insert("status".to_string(), self.status.to_string());
+        labels.insert("method".to_string(), self.method.to_string());
+        labels.insert("error".to_string(), self.error.to_string());
+        let base_labels = labels.iter().map(|(k, v)| format!("{}=\"{}\"", k, v)).collect::<Vec<_>>().join(", ");
         let mut results = Vec::new();
         let duration_stat = format!(
-            "web_exporter_response_duration_milliseconds{{url=\"{}\", status=\"{}\", method=\"{}\", error=\"{}\"}} {}",
-            self.url,
-            self.status,
-            self.method,
-            self.error, // if self.error { 1 } else { 0 },
+            "web_exporter_response_duration_milliseconds{{{} }} {}",
+            base_labels,
             self.duration,
         );
         let size_stat = format!(
-            "web_exporter_response_response_size_bytes{{url=\"{}\", status=\"{}\", method=\"{}\", error=\"{}\"}} {}",
-            self.url,
-            self.status,
-            self.method,
-            self.error, // if self.error { 1 } else { 0 },
+            "web_exporter_response_response_size_bytes{{{} }} {}",
+            base_labels,
             self.size,
         );
         results.push(duration_stat);
         results.push(size_stat);
         for query_result in &self.query_results {
             let query_stat = format!(
-                "web_exporter_query_count{{url=\"{}\", query=\"{}\", status=\"{}\", method=\"{}\", error=\"{}\"}} {}",
-                self.url,
+                "web_exporter_query_count{{{}, query=\"{}\" }} {}",
+                base_labels,
                 query_result.query,
-                self.status,
-                self.method,
-                self.error, // if self.error { 1 } else { 0 },
-                // If we cannot parse selector just return -1
                 query_result.count.unwrap_or(0),
             );
             results.push(query_stat);

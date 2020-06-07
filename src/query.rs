@@ -11,6 +11,7 @@ use std::error;
 // use futures::stream;
 // use futures::stream::StreamExt;
 use std::time;
+use std::collections::HashMap;
 
 struct QueryResponse {
     status: u16,
@@ -74,12 +75,16 @@ async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dy
 }
 
 // async fn process_target(target: &settings::Target) -> Vec<results::QueryResult> {
-async fn process_target(target: &settings::Target) -> results::TargetResult<'_> {
+async fn process_target<'result, 'target: 'result>(target: &'target settings::Target) -> results::TargetResult<'result> {
     let start = time::Instant::now();
     let raw_response = &query_target(&target).await;
     let duration = start.elapsed().as_millis();
     let mut query_results = Vec::new();
     let default_queries = &Vec::new();
+    let extra_labels = match &target.extra_labels {
+        Some(labels) => labels.clone(),
+        None => HashMap::new(),
+    };
     match &raw_response {
         // There was an error with the request.
         Err(err) => {
@@ -96,6 +101,7 @@ async fn process_target(target: &settings::Target) -> results::TargetResult<'_> 
                 duration,
                 // No need to go through queries response
                 query_results,
+                extra_labels,
             }
         }
         Ok(response) => {
@@ -131,6 +137,7 @@ async fn process_target(target: &settings::Target) -> results::TargetResult<'_> 
                 duration,
                 // No need to go through queries response
                 query_results,
+                extra_labels,
             }
         }
     }
