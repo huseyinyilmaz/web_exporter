@@ -1,8 +1,8 @@
 use config::{Config, ConfigError, Environment, File};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::fmt;
 use std::net::Ipv4Addr;
-use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub enum TargetMethod {

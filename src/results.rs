@@ -1,6 +1,6 @@
 use crate::settings;
-use std::fmt;
 use std::collections::HashMap;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct QueryResult {
@@ -32,17 +32,19 @@ impl fmt::Display for TargetResult<'_> {
         labels.insert("status".to_string(), self.status.to_string());
         labels.insert("method".to_string(), self.method.to_string());
         labels.insert("error".to_string(), self.error.to_string());
-        let base_labels = labels.iter().map(|(k, v)| format!("{}=\"{}\"", k, v)).collect::<Vec<_>>().join(", ");
+        let base_labels = labels
+            .iter()
+            .map(|(k, v)| format!("{}=\"{}\"", k, v))
+            .collect::<Vec<_>>()
+            .join(", ");
         let mut results = Vec::new();
         let duration_stat = format!(
             "web_exporter_response_duration_milliseconds{{{} }} {}",
-            base_labels,
-            self.duration,
+            base_labels, self.duration,
         );
         let size_stat = format!(
             "web_exporter_response_response_size_bytes{{{} }} {}",
-            base_labels,
-            self.size,
+            base_labels, self.size,
         );
         results.push(duration_stat);
         results.push(size_stat);

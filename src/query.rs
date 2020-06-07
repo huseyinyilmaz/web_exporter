@@ -10,8 +10,8 @@ use std::error;
 // use futures::prelude::*;
 // use futures::stream;
 // use futures::stream::StreamExt;
-use std::time;
 use std::collections::HashMap;
+use std::time;
 
 struct QueryResponse {
     status: u16,
@@ -24,7 +24,6 @@ async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dy
     let url = &target.url;
     let mut req = match target
         .method
-
         .as_ref()
         .unwrap_or(&settings::TargetMethod::GET)
     {
@@ -55,12 +54,10 @@ async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dy
                 reqwest::header::HeaderName::from_bytes(key.as_bytes())?,
                 reqwest::header::HeaderValue::from_str(value)?,
             );
-        //     form = form.text(key, value);
-         }
+            //     form = form.text(key, value);
+        }
         req = req.headers(headers_map);
     }
-
-
 
     let response = req.send().await?;
     let status = response.status().as_u16();
@@ -75,7 +72,9 @@ async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dy
 }
 
 // async fn process_target(target: &settings::Target) -> Vec<results::QueryResult> {
-async fn process_target<'result, 'target: 'result>(target: &'target settings::Target) -> results::TargetResult<'result> {
+async fn process_target<'result, 'target: 'result>(
+    target: &'target settings::Target,
+) -> results::TargetResult<'result> {
     let start = time::Instant::now();
     let raw_response = &query_target(&target).await;
     let duration = start.elapsed().as_millis();
