@@ -101,7 +101,7 @@ $ docker run \
        -p 3030:3030 \
        --name web_exporter \
        -v $(pwd)/web_exporter.yaml:/usr/local/prometheus_web_exporter/web_exporter.yaml \
-       huseyinyilmaz/web_exporter:v1.0.0
+       huseyinyilmaz/web_exporter:v1.0.5
 # endpoint should be on http://localhost:3030/metrics
 ```
 ### With docker-compose
@@ -109,7 +109,7 @@ $ docker run \
 First download sample configuration from repository and put it in the same directory as docker-compose.yaml file. Then you can add following config to your docker-compose file.
 ```
   webexporter:
-    image: huseyinyilmaz/web_exporter:v1.0.1
+    image: huseyinyilmaz/web_exporter:v1.0.5
     volumes:
       - ./web_exporter.yaml:/usr/local/prometheus_web_exporter/web_exporter.yaml
     environment:
