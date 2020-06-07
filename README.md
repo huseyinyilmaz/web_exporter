@@ -66,21 +66,26 @@ targets:
 Configuration above will generate metrics like following:
 
 ``` txt
-web_exporter_response_duration_milliseconds{url="https://www.rust-lang.org/", status=200, error=0} 640
-web_exporter_response_response_size_bytes{url="https://www.rust-lang.org/", status=200, error=0} 19220
-web_exporter_query_count{url="https://www.rust-lang.org/", query="#language-values div.flex-none section", status=200, error=0} 3
-web_exporter_query_count{url="https://www.rust-lang.org/", query="header h1", status=200, error=0} 1
-web_exporter_query_count{url="https://www.rust-lang.org/", query="footer div.attribution", status=200, error=0} 1
-web_exporter_response_duration_milliseconds{url="https://www.rust-lang.org/invalid-page-with-404-response", status=404, error=0} 292
-web_exporter_response_response_size_bytes{url="https://www.rust-lang.org/invalid-page-with-404-response", status=404, error=0} 8244
-web_exporter_query_count{url="https://www.rust-lang.org/invalid-page-with-404-response", query="div.flex", status=404, error=0} 6
-web_exporter_query_count{url="https://www.rust-lang.org/invalid-page-with-404-response", query="div", status=404, error=0} 14
-web_exporter_response_duration_milliseconds{url="https://www.page-does-not-exist.io/", status=0, error=1} 270
-web_exporter_response_response_size_bytes{url="https://www.page-does-not-exist.io/", status=0, error=1} 0
-web_exporter_response_duration_milliseconds{url="https://www.rust-lang.org/invalid-css-query", status=404, error=0} 306
-web_exporter_response_response_size_bytes{url="https://www.rust-lang.org/invalid-css-query", status=404, error=0} 8244
-web_exporter_query_count{url="https://www.rust-lang.org/invalid-css-query", query="**XX**", status=404, error=0} 0
-web_exporter_scrape_duration_milliseconds 641
+web_exporter_response_duration_milliseconds{url="https://www.rust-lang.org/", method="GET", error="false", name="homepage", status="200" } 787
+web_exporter_response_response_size_bytes{url="https://www.rust-lang.org/", method="GET", error="false", name="homepage", status="200" } 19220
+web_exporter_query_count{url="https://www.rust-lang.org/", method="GET", error="false", name="homepage", status="200", query="#language-values div.flex-none section" } 3
+web_exporter_query_count{url="https://www.rust-lang.org/", method="GET", error="false", name="homepage", status="200", query="header h1" } 1
+web_exporter_query_count{url="https://www.rust-lang.org/", method="GET", error="false", name="homepage", status="200", query="footer div.attribution" } 1
+web_exporter_response_duration_milliseconds{error="false", url="https://www.rust-lang.org/invalid-page-with-404-response", status="404", name="404 page", method="GET" } 142
+web_exporter_response_response_size_bytes{error="false", url="https://www.rust-lang.org/invalid-page-with-404-response", status="404", name="404 page", method="GET" } 8244
+web_exporter_query_count{error="false", url="https://www.rust-lang.org/invalid-page-with-404-response", status="404", name="404 page", method="GET", query="div.flex" } 6
+web_exporter_query_count{error="false", url="https://www.rust-lang.org/invalid-page-with-404-response", status="404", name="404 page", method="GET", query="div" } 14
+web_exporter_response_duration_milliseconds{name="nonexistent_page", status="0", url="https://www.page-does-not-exist.io/", method="GET", error="true" } 83
+web_exporter_response_response_size_bytes{name="nonexistent_page", status="0", url="https://www.page-does-not-exist.io/", method="GET", error="true" } 0
+web_exporter_response_duration_milliseconds{error="false", name="query_with_invalid_css", method="GET", status="404", url="https://www.rust-lang.org/invalid-css-query" } 110
+web_exporter_response_response_size_bytes{error="false", name="query_with_invalid_css", method="GET", status="404", url="https://www.rust-lang.org/invalid-css-query" } 8244
+web_exporter_query_count{error="false", name="query_with_invalid_css", method="GET", status="404", url="https://www.rust-lang.org/invalid-css-query", query="**XX**" } 0
+web_exporter_response_duration_milliseconds{error="false", status="404", url="https://www.rust-lang.org/no-css-query", method="GET" } 127
+web_exporter_response_response_size_bytes{error="false", status="404", url="https://www.rust-lang.org/no-css-query", method="GET" } 8244
+web_exporter_response_duration_milliseconds{name="google_search", url="https://www.google.com/search", status="200", method="GET", error="false" } 964
+web_exporter_response_response_size_bytes{name="google_search", url="https://www.google.com/search", status="200", method="GET", error="false" } 406579
+web_exporter_query_count{name="google_search", url="https://www.google.com/search", status="200", method="GET", error="false", query="div.g" } 11
+web_exporter_scrape_duration_milliseconds 972
 ```
 
 ## How to get it
@@ -131,12 +136,13 @@ mv sample_web_exporter.yaml web_exporter.yaml
 ./prometheus_web_exporter
 # endpoint should be on http://localhost:3030/metrics
 ```
+
+### With prebuilt binary.
+You can download the binary for your os from releases section in github. After getting the binary, just put the configuration next to binary you are good to go.
+
 ## Logging:
 Logging configuration can be provided through environment variables. To run the project with info logging level you can run it like this
 
 ``` bash
 $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
 ```
-
-### Download binary
-You can download the binary for your os from releases section in github. After getting the binary, just put the configuration next to binary you are good to go.
