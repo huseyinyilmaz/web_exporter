@@ -2,7 +2,7 @@
 
 Prometheus Web Exporter is a prometheus exporter that collects information about web pages. You can collect 2 different type of information from url. Network health info (response time and response body size) and content based info (Number of elements in a page that matches with given css query.)
 
-Web exporter uses same technology with firefox browser engine (servo) to parse and run css queries. So it is quite fast and supports wide veriety of css queries. Unfortunately it does not run javascript so any dom manipulation done with javascript will not be caught by web exporter.
+Web exporter uses same technology with firefox browser engine (servo) to parse and run css queries. So it is quite fast and supports wide veriety of css queries. Unfortunately it does not run javascript so any dom manipulation done with javascript will not be caught by web exporter. (no SPA support.)
 
 ## Configuration
    Web configuration is done with a file named web_exporter.yaml that is located in the same directory with the executable. Here is an example for web_exporterl.yaml file:
@@ -25,21 +25,42 @@ targets:
       - "#language-values div.flex-none section"
       - "header h1"
       - "footer div.attribution"
+    extra_labels:
+      name: homepage
   # 404 response with queries
   - url: "https://www.rust-lang.org/invalid-page-with-404-response"
+    headers:
+      Referer: "https://www.rust-lang.org/"
     queries:
       - "div.flex"
       - "div"
+    extra_labels:
+      name: 404 page
   # Network error. (Queries will not return any value since they will not be running.)
   - url: "https://www.page-does-not-exist.io/"
     queries:
       - "div"
+    extra_labels:
+      name: nonexistent_page
   # Invalid query (return value will be 0 and css query parse error will be logged.)
   - url: "https://www.rust-lang.org/invalid-css-query"
     queries:
       - "**XX**"
+    extra_labels:
+      name: query_with_invalid_css
   # 200 page without any query (only response time and size will be returned.)
   - url: "https://www.rust-lang.org/no-css-query"
+  # google search test example with queryparameters and extra headers.
+  - url: "https://www.google.com/search"
+    queryparameters:
+      q: rust
+    headers:
+      referer: "https://www.google.com/"
+      user-agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36"
+    queries:
+      - "div.g"
+    extra_labels:
+      name: google_search
 ```
 
 Configuration above will generate metrics like following:

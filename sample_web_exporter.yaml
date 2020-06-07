@@ -19,6 +19,8 @@ targets:
       name: homepage
   # 404 response with queries
   - url: "https://www.rust-lang.org/invalid-page-with-404-response"
+    headers:
+      Referer: "https://www.rust-lang.org/"
     queries:
       - "div.flex"
       - "div"
@@ -38,3 +40,14 @@ targets:
       name: query_with_invalid_css
   # 200 page without any query (only response time and size will be returned.)
   - url: "https://www.rust-lang.org/no-css-query"
+  # google search test example with queryparameters and extra headers.
+  - url: "https://www.google.com/search"
+    queryparameters:
+      q: rust
+    headers:
+      referer: "https://www.google.com/"
+      user-agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36"
+    queries:
+      - "div.g"
+    extra_labels:
+      name: google_search
