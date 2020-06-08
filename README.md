@@ -152,7 +152,7 @@ You can download the binary for your os from releases section in github. After g
     static_configs:
     - targets: ['webexporter:3030']
 ```
-## How can I change scrape frequency.
+## How can I change scrape frequency?
 
 Web scraper does not have any internal cache and it will run the scrape every time /metrics endpoint is called. Scrape frequency can be changed by changing `scrape_interval` value from premetheus configuration.
 ``` yaml
@@ -164,7 +164,7 @@ Web scraper does not have any internal cache and it will run the scrape every ti
     static_configs:
     - targets: ['webexporter:3030']
 ```
-## How can I change log level.
+## How can I change log level?
 Logging level can be set via environment variables. To run the project with info log level, you can run it like this
 
 ``` bash
