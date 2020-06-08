@@ -87,7 +87,6 @@ web_exporter_response_response_size_bytes{name="google_search", url="https://www
 web_exporter_query_count{name="google_search", url="https://www.google.com/search", status="200", method="GET", error="false", query="div.g" } 11
 web_exporter_scrape_duration_milliseconds 972
 ```
-
 ## How to get it
 ### With docker.
 ``` bash
@@ -140,9 +139,38 @@ mv sample_web_exporter.yaml web_exporter.yaml
 ### With prebuilt binary.
 You can download the binary for your os from releases section in github. After getting the binary, just put the configuration next to binary you are good to go.
 
-## Logging:
-Logging configuration can be provided through environment variables. To run the project with info logging level you can run it like this
+## FAQ
+### How can I integrate it to prometheus:
+
+``` yaml
+  - job_name: 'webexporter'
+    scrape_interval: 60s
+    scrape_timeout: 50s
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+    - targets: ['webexporter:3030']
+```
+## How can I change scrape frequency.
+
+Web scraper does not have any internal cache and it will run the scrape every time /metrics endpoint is called. Scrape frequency can be changed by changing `scrape_interval` value from premetheus configuration.
+``` yaml
+  - job_name: 'webexporter'
+    scrape_interval: 30s # <- Change scrape frequency from here.
+    scrape_timeout: 29s
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+    - targets: ['webexporter:3030']
+```
+## How can I change log level.
+Logging level can be set via environment variables. To run the project with info logging level you can run it like this
 
 ``` bash
 $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
 ```
+
+If you are using docker image, log level is already set to WARN.
+
+## One of the metrics return with label `"error": "true"` what does that mean?
+It means website you are scraping cannot complete http request and it is returning network error. Those errors will also be logged to stdout by the exporter. If you are using docker container you should see the errors on docker logs.
