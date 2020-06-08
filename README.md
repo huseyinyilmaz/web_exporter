@@ -174,4 +174,4 @@ $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
 If you are using docker image, log level is already set to WARN.
 
 ## One of the metrics return with label "error": "true" what does that mean?
-It means website you are scraping cannot complete http request and it is returning network error. Those errors will also be logged to stdout by the exporter. If you are using docker container you should see the errors on docker logs.
+It means website you are scraping cannot complete http request and it is returning network error. Those errors will also be logged to stdout by the exporter. If you are using docker container you should see the errors on docker logs. You can see the details about the errors there.
