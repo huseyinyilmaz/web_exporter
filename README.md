@@ -165,7 +165,7 @@ Web scraper does not have any internal cache and it will run the scrape every ti
     - targets: ['webexporter:3030']
 ```
 ## How can I change log level.
-Logging level can be set via environment variables. To run the project with info logging level you can run it like this
+Logging level can be set via environment variables. To run the project with info log level, you can run it like this
 
 ``` bash
 $ WEB_EXPORTER_LOG_LEVEL=info ./prometheus_web_exporter
