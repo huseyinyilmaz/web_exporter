@@ -1,12 +1,12 @@
 # Prometheus Web Exporter
 
-Prometheus Web Exporter is a prometheus exporter that collects information about web pages. It can collect 2 different type of information. Network health info (Response time and response body size) and content based info (Number of elements in a page that matches with given css query.)
+Prometheus Web Exporter is a prometheus exporter that collects information about web pages. It can collect two different types of information. Network health info (response time and response body size) and content based info (Number of elements in a page that matches with given css query.)
 
-Web exporter uses same technology with firefox browser engine (servo) to parse and run css queries. So it is quite fast and supports wide veriety of css queries. Unfortunately it does not run javascript so any dom manipulation done with javascript will not be caught by web exporter. (no SPA support.)
+Web exporter uses same technology as firefox browser engine (servo) to parse and run css queries. As a result, it is quite fast and supports wide veriety of css queries. Unfortunately, it does not run javascript, so any dom manipulation done with javascript will not be caught by web exporter. (no SPA support.)
 
 ## Configuration
 
-   configuration is done with a file named web_exporter.yaml that is located in the same directory with the executable. Here is an example for web_exporterl.yaml file:
+   configuration is done using a file named web_exporter.yaml that is located in the same directory as the executable. Here is an example for web_exporterl.yaml file:
 
 ``` yaml
 # ip address server will listen. default: 0.0.0.0
@@ -106,7 +106,7 @@ $ docker run \
 ```
 ### With docker-compose
 
-First download sample configuration from repository and put it in the same directory as docker-compose.yaml file. Then you can add following config to your docker-compose file.
+First, download sample configuration from repository and put it in the same directory as docker-compose.yaml file. Then you can add following config to your docker-compose file.
 ```
   webexporter:
     image: huseyinyilmaz/web_exporter:v1.0.5
@@ -138,7 +138,7 @@ mv sample_web_exporter.yaml web_exporter.yaml
 ```
 
 ### With prebuilt binary.
-You can download the binary for your os from releases section in github. After getting the binary, just put the configuration next to binary you are good to go.
+You can download the binary for your os from releases section in github. After getting the binary, just put the configuration next to binary and you are good to go.
 
 ## FAQ
 ### How can I integrate it to prometheus:
