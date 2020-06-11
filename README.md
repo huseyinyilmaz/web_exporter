@@ -1,6 +1,6 @@
 # Prometheus Web Exporter
 
-Prometheus Web Exporter is a prometheus exporter that collects information about web pages. You can collect 2 different type of information. Network health info (Response time and response body size) and content based info (Number of elements in a page that matches with given css query.)
+Prometheus Web Exporter is a prometheus exporter that collects information about web pages. It can collect 2 different type of information. Network health info (Response time and response body size) and content based info (Number of elements in a page that matches with given css query.)
 
 Web exporter uses same technology with firefox browser engine (servo) to parse and run css queries. So it is quite fast and supports wide veriety of css queries. Unfortunately it does not run javascript so any dom manipulation done with javascript will not be caught by web exporter. (no SPA support.)
 
