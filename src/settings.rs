@@ -4,22 +4,22 @@ use std::collections::HashMap;
 use std::fmt;
 use std::net::Ipv4Addr;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub enum TargetMethod {
-    GET,
-    POST,
+    Get,
+    Post,
 }
 
 impl fmt::Display for TargetMethod {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            TargetMethod::GET => write!(f, "GET"),
-            TargetMethod::POST => write!(f, "POST"),
+            TargetMethod::Get => write!(f, "GET"),
+            TargetMethod::Post => write!(f, "POST"),
         }
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Target {
     pub name: Option<String>,
     pub url: String,
@@ -32,7 +32,7 @@ pub struct Target {
     pub extra_labels: Option<HashMap<String, String>>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Settings {
     pub ip_address: Option<Ipv4Addr>,
     pub port: Option<u16>,
@@ -51,20 +51,32 @@ impl Default for Settings {
     }
 }
 
-impl Settings {
-    pub fn new() -> Result<Self, ConfigError> {
-        debug!("Reading settings.");
-        let mut s = Config::new();
-        // Start off by merging in the "default" configuration file
-        s.merge(File::with_name("web_exporter"))?;
-        s.merge(Environment::with_prefix("web_exporter"))?;
+impl From<Config> for Settings {
+    fn from(config: Config) -> Self {
         let default: Settings = Settings::default();
-        let parsed_settings: Settings = s.try_into()?;
-        Ok(Settings {
+        let parsed_settings: Settings = config.try_deserialize().unwrap_or_else(|err| {
+            eprintln!("Error deserializing config: {}", err);
+            default.clone() // Return default settings on error
+        });
+
+        Settings {
             ip_address: parsed_settings.ip_address.or(default.ip_address),
             port: parsed_settings.port.or(default.port),
             metrics_path: parsed_settings.metrics_path.or(default.metrics_path),
             targets: parsed_settings.targets.or(default.targets),
-        })
+        }
+    }
+}
+
+impl Settings {
+    pub fn new() -> Result<Self, ConfigError> {
+        debug!("Reading settings.");
+        let s = Config::builder()
+            // Start off by merging in the "default" configuration file
+            .add_source(File::with_name("web_exporter"))
+            .add_source(Environment::with_prefix("web_exporter"))
+            .build()?;
+
+        Ok(s.into())
     }
 }

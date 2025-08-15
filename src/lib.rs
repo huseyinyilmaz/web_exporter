@@ -28,7 +28,7 @@ async fn get_metrics(s: Arc<settings::Settings>) -> Result<impl warp::Reply, Inf
     let start = time::Instant::now();
     let result = query::process_targets(&s).await;
     let duration = start.elapsed();
-    Ok(vec![
+    Ok([
         result.to_string(),
         format!(
             "web_exporter_scrape_duration_milliseconds {}",

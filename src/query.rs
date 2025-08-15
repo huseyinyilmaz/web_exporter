@@ -25,10 +25,10 @@ async fn query_target(target: &settings::Target) -> Result<QueryResponse, Box<dy
     let mut req = match target
         .method
         .as_ref()
-        .unwrap_or(&settings::TargetMethod::GET)
+        .unwrap_or(&settings::TargetMethod::Get)
     {
-        settings::TargetMethod::GET => client.get(url),
-        settings::TargetMethod::POST => client.post(url),
+        settings::TargetMethod::Get => client.get(url),
+        settings::TargetMethod::Post => client.post(url),
     };
     if let Some(body_string) = &target.body {
         req = req.body(body_string.to_string());
@@ -76,7 +76,7 @@ async fn process_target<'result, 'target: 'result>(
     target: &'target settings::Target,
 ) -> results::TargetResult<'result> {
     let start = time::Instant::now();
-    let raw_response = &query_target(&target).await;
+    let raw_response = &query_target(target).await;
     let duration = start.elapsed().as_millis();
     let mut query_results = Vec::new();
     let default_queries = &Vec::new();
@@ -91,10 +91,10 @@ async fn process_target<'result, 'target: 'result>(
             results::TargetResult {
                 url: target.url.clone(),
                 status: 0,
-                method: &target
+                method: target
                     .method
                     .as_ref()
-                    .unwrap_or(&settings::TargetMethod::GET), // TODO do not repeat default value.
+                    .unwrap_or(&settings::TargetMethod::Get), // TODO do not repeat default value.
                 error: true,
                 size: 0,
                 duration,
@@ -105,7 +105,7 @@ async fn process_target<'result, 'target: 'result>(
         }
         Ok(response) => {
             for q in target.queries.as_ref().unwrap_or(default_queries) {
-                query_results.push(match &Selector::parse(&q) {
+                query_results.push(match &Selector::parse(q) {
                     Err(err) => {
                         warn!("Query Parse Error: url: {:?}, error: {:?}", target.url, err);
                         // None means we could not parse that query.
@@ -115,7 +115,7 @@ async fn process_target<'result, 'target: 'result>(
                         }
                     }
                     Ok(selector) => {
-                        let results = response.document.select(&selector);
+                        let results = response.document.select(selector);
                         let count = results.fold(0, |acc, _| acc + 1);
                         results::QueryResult {
                             query: q.clone(),
@@ -130,7 +130,7 @@ async fn process_target<'result, 'target: 'result>(
                 method: target
                     .method
                     .as_ref()
-                    .unwrap_or(&settings::TargetMethod::GET),
+                    .unwrap_or(&settings::TargetMethod::Get),
                 error: false,
                 size: response.size,
                 duration,
