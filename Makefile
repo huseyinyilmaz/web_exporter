@@ -1,8 +1,11 @@
-VERSION = $(shell cargo pkgid | sed 's!.*\:!!')
+VERSION = $(shell cargo pkgid | sed 's!.*\@!!')
+
 version:
 	@echo "$(VERSION)"
+
 run:
 	WEB_EXPORTER_LOG_LEVEL=info cargo run
+
 # before releasing update version in cargo.toml file and run prerelease.
 prerelease:
 	cargo generate-lockfile
@@ -11,6 +14,10 @@ prerelease:
 	cargo check
 	cargo fmt
 	cargo clippy -- -D warnings
+
+check: prerelease
+
+# Make sure you already commit all your changes.
 release: prerelease
 	cargo publish
 	git tag v$(VERSION);
