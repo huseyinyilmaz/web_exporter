@@ -32,7 +32,7 @@ jobs:
             asset_name: prometheus_web_exporter-macos
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
     - uses: actions-rs/toolchain@v1
       with:
@@ -43,9 +43,10 @@ jobs:
       run: cargo build --release --locked
 
     - name: Upload binaries to release
-      uses: svenstaro/upload-release-action@v1-release
+      uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: target/release/${{ matrix.artifact_name }}
         asset_name: ${{ matrix.asset_name }}
         tag: ${{ github.ref }}
+        overwrite: true
